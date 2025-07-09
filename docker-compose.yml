@@ -1,0 +1,73 @@
+services:
+  notebook:
+    image: jupyter/scipy-notebook:latest
+    hostname: notebook
+    volumes:
+      - "./xdmod-notebooks:/home/jovyan"
+    networks:
+      - jupyter-net
+    ports:
+      - target: 8888
+        published: 8888
+    command:
+      - start-notebook.py 
+      - --ServerApp.allow_origin=*
+      - --ServerApp.disable_check_xsrf=True
+
+  webserver:
+    image: tools-ext-01.ccr.xdmod.org/xdmod:v11.0.1
+    hostname: xdmod
+    volumes:
+      - "./xdmod:/root/xdmod"
+    networks:
+      - jupyter-net
+    ports:
+      - target: 443
+        published: 8443
+    tty: true
+
+  hub:
+    build:
+      context: .
+      dockerfile: jupyterhub/Dockerfile.jupyterhub
+      args:
+        JUPYTERHUB_VERSION: latest
+    restart: always
+    image: jupyterhub
+    container_name: jupyterhub
+    networks:
+      - jupyter-net
+    volumes:
+      # Bind Docker socket on the host so we can connect to the daemon from
+      # within the container
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+      - "jupyterhub-data:/data"
+      #services
+      - "./jupyterhub:/srv/jupyterhub"
+    ports:
+      - "8000:8000"
+    environment:
+      # This username will be a JupyterHub admin
+      JUPYTERHUB_ADMIN: admin
+      # All containers will join this network
+      DOCKER_NETWORK_NAME: jupyter-net
+      # JupyterHub will spawn this Notebook image for users
+      DOCKER_NOTEBOOK_IMAGE: jupyter/scipy-notebook:latest
+      # Notebook directory inside user image
+      DOCKER_NOTEBOOK_DIR: /home/jovyan/work
+    configs:
+      - source: jupyterhub-config
+        target: /srv/jupyterhub/jupyterhub_config.py
+
+volumes:
+  jupyterhub-data:
+
+
+networks:
+  jupyter-net:
+    name: jupyter-net
+
+
+configs:
+  jupyterhub-config:
+    file: ./jupyterhub/jupyterhub_config.py
