@@ -56,15 +56,22 @@ c.JupyterHub.authenticator_class = "dummy"
 # Allow anyone to sign-up without approval
 c.NativeAuthenticator.open_signup = True
 
+# Allow all origin
+c.ServerApp.allow_origin = '*'
+
 # Allowed admins
 admin = os.environ.get("JUPYTERHUB_ADMIN")
 if admin:
     c.Authenticator.admin_users = [admin]
 
 
-'''c.JupyterHub.services = [
+c.JupyterHub.services = [
     {
         "name": "testing",
         "command": ["python3", "test_service.py"],
+        #"environment" : {
+         #   "JUPYTERHUB_SERVICE_PREFIX" : "/services/notebooks",
+        #},
+        "url" : "http://127.0.0.1:9999/"
     }
-]'''
+]
