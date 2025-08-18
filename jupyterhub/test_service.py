@@ -28,8 +28,13 @@ class NotebookHandler(HubAuthenticated, RequestHandler):
         try:
             data = json.loads(self.request.body.decode('utf-8'))
             print("Received data:", data)
-            self.storage.setdefault('data', []).append(data)
-
+            
+            
+            if (len(self.storage.setdefault('data', [])) == 0):
+                self.storage.setdefault('data', []).append(data)
+            else :
+                self.storage.get('data', [])[0] = data
+            
             self.write(json.dumps({'status': 'success', 'received': data}, indent=2))
         except json.JSONDecodeError:
             self.set_status(400)
