@@ -1,18 +1,18 @@
 services:
-  #notebook:
-  #  image: jupyter/scipy-notebook:latest
-  # hostname: notebook
-  #  volumes:
-  #    - "../xdmod-notebooks:/home/jovyan"
-  #  networks:
-  #    - jupyter-net
-  #  ports:
-  #    - target: 8888
-  #      published: 8888
-  #  command:
-  #    - start-notebook.py 
-  #    - --ServerApp.allow_origin=*
-  #    - --ServerApp.disable_check_xsrf=True
+  notebook: # used for testing
+    image: jupyter/scipy-notebook:latest
+   hostname: notebook
+    volumes:
+      - "../xdmod-notebooks:/home/jovyan"
+    networks:
+      - jupyter-net
+    ports:
+      - target: 8888
+        published: 8888
+    command:
+      - start-notebook.py 
+      - --ServerApp.allow_origin=*
+      - --ServerApp.disable_check_xsrf=True
 
 
   webserver:

@@ -69,9 +69,6 @@ c.JupyterHub.services = [
     {
         "name": "testing",
         "command": ["python3", "test_service.py"],
-        #"environment" : {
-         #   "JUPYTERHUB_SERVICE_PREFIX" : "/services/notebooks",
-        #},
         "url" : "http://127.0.0.1:9999/"
     }
 ]
