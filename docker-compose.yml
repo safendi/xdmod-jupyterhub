@@ -1,7 +1,7 @@
 services:
-  notebook: # used for testing
+  notebook: #used for testing
     image: jupyter/scipy-notebook:latest
-   hostname: notebook
+    hostname: notebook
     volumes:
       - "../xdmod-notebooks:/home/jovyan"
     networks:
